@@ -9,25 +9,20 @@ typedef enum RIO_FILE_OPEN_MODE {
 	RIO_WRITE_MODE 		= 0x00000002
 } RIO_FILE_OPEN_MODE;
 
-typedef struct rio_file {
-	char name[MAX_FILENAME_SIZE];
-	unsigned int file_size; // in bytes
-	int opening_mode;
-	void* contents;
-} rio_file;
+typedef struct rio_file rio_file;
 
 /**
  * Opens a file in case it already exists in the root directory, creates a file in case it doesn't exist
  * 	- filename: name of the file, make sure it is zero terminated.
  * 	- mode: opening mode, RIO_READ_MODE for reading contents, RIO_WRITE_MODE for writing contents.	
  * */
-rio_file rio_open_file(const char* filename, RIO_FILE_OPEN_MODE mode);
+rio_file* rio_open_file(const char* filename, RIO_FILE_OPEN_MODE mode);
 
 /**
- * Writes a string to an opened file.
+ * Writes a string to the end of an opened file.
  * 	- file: rio_file struct returned from rio_open_file()
  * 	- contents: the string to be written
- * 	- count: quantity of characters from the string *contents*, usually the number of characters in *contents*
+ * 	- count: quantity of characters from the string *contents*
  * */
 int rio_write_file(rio_file* file, const void* contents, int count);
 
@@ -47,9 +42,26 @@ int rio_read_file(rio_file* file, void* dest, int count, int offset);
 int rio_file_exists(const char* filename);
 
 /**
+ * This library doesn't actually interface with I/O directly with functions
+ * 	like rio_read_file and rio_write_file, when we open the file (rio_open_file),
+ * 	the bytes from the file are copied to the file.contents pointer, which means 
+ * 	we're just operating in memory. To actually persist changes the file, you'll 
+ * 	need to call this function.
+ * 	- file: rio_file struct with valid file name and contents
+ * */
+int rio_save_changes(rio_file* file);
+
+/**
  * Closes a file opened/created by the function rio_open_file()
- * 	- file_handle: the handle returned from the function rio_open_file()
+ * 	- file: the handle returned from the function rio_open_file()
  * */
 void rio_close_file(rio_file* file);
+
+/**
+ * Persists the contents of the rio_file struct and then closes a file opened/created by 
+ * 	the function rio_open_file()
+ * 	- file: the handle returned from the function rio_open_file()
+ * */
+int rio_save_and_close_file(rio_file* file);
 
 #endif // R_IN_OUT_H

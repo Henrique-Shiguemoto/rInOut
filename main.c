@@ -1,7 +1,9 @@
 #include "rInOut.h"
 
+#include <stdio.h>
+
 int main(void){
-	rio_file handle = rio_open_file("test.txt", RIO_READ_MODE | RIO_WRITE_MODE);
+	rio_file* handle = rio_open_file("test.txt", RIO_READ_MODE | RIO_WRITE_MODE);
 	
 	// const char* sample_content = "Hello World!\n";
 
@@ -14,7 +16,8 @@ int main(void){
 	// 	return 1;
 	// }
 
-	rio_close_file(&handle);
+	rio_close_file(handle);
+	// rio_save_close_file(handle);
 
 	return 0;
 }

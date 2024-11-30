@@ -1,9 +1,14 @@
-COMPILER=clang
-COMPILER_FLAGS=-Wall -Wextra -pedantic -g -std=c11 -Wno-unused-parameter -Wno-unused-variable
 SRC=main.c rInOut.c
 BIN=main.exe
+COMPILER=clang
+COMPILER_WIN32=CL
+COMPILER_FLAGS=-Wall -Wextra -pedantic -g -std=c11 -Wno-unused-parameter -Wno-unused-variable
+
+# /OUT:$(BIN) doesn't seem to be necessary, it already outputs main.exe for me
+COMPILER_FLAGS_WIN32=/Wall /std:c11 /Zi /wd4100 /wd5045 /wd4668 /options:strict
 DEBUGGER=gdb
-TRASH=*.o *.exe
+DEBUGGER_WIN32=raddbg
+TRASH=*.o *.exe *.ilk *.obj *.pdb *.rdi *.txt
 
 all:
 	$(COMPILER) $(SRC) $(COMPILER_FLAGS) -o $(BIN)
@@ -11,12 +16,14 @@ all:
 run: 
 	$(BIN)
 
-debug: 
+debug: clean all
 	$(DEBUGGER) $(BIN)
 
-e: clean all run
+win:
+	$(COMPILER_WIN32) $(SRC) $(COMPILER_FLAGS_WIN32)
 
-d: clean all debug
+dwin: clean win
+	$(DEBUGGER_WIN32) $(BIN)
 
 clean:
 	del $(TRASH)
