@@ -1,3 +1,7 @@
-TODO.txt
 *.exe
 *.o
+*.ilk 
+*.obj 
+*.pdb 
+*.rdi 
+*.txt
