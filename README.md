@@ -18,6 +18,8 @@ Depending on your build system, you'll need to update it (like a Makefile for ex
 
 ## Technologies Used
 
-- C11/C++11
+- C/C++
+- MSVC/Clang/GCC
 - Makefiles
-- Win32 API
+- Win32
+- raddbg/gdb

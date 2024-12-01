@@ -3,6 +3,7 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 
 #include <windows.h>
+#include <stdio.h>
 
 #define _rio_min(a, b) ((a) > (b) ? (b) : (a))
 

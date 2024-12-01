@@ -36,10 +36,16 @@ int rio_write_file(rio_file* file, const void* contents, int count);
 int rio_read_file(rio_file* file, void* dest, int count, int offset);
 
 /**
- * Verifies if a file name corresponds to a file inside the root directory
+ * Verifies if a file name corresponds to an existing file.
  * 	- filename: name of the file to be found
  * */
 int rio_file_exists(const char* filename);
+
+/**
+ * Returns the file size in bytes of the corresponding file from a file name.
+ * 	- filename: name of the file to be found
+ * */
+int rio_file_size(const char* filename);
 
 /**
  * This library doesn't actually interface with I/O directly with functions
