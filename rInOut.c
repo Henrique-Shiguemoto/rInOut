@@ -10,7 +10,7 @@
 typedef struct rio_file {
 	char name[MAX_FILENAME_SIZE];
 	HANDLE handle;
-	unsigned int file_size; // in bytes
+	DWORD file_size; // in bytes
 	int opening_mode;
 	void* contents;
 } rio_file;
@@ -78,7 +78,11 @@ int rio_write_file(rio_file* file, const void* contents, int count){
 }
 
 int rio_read_file(rio_file* file, void* dest, int count, int offset){
-	return 0;
+	if((unsigned int)count > (file->file_size - offset)){
+		return 0;
+	}
+	CopyMemory(dest, (char*)(file->contents) + offset, count);
+	return 1;
 }
 
 int rio_file_exists(const char* filename){
