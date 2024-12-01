@@ -71,6 +71,8 @@ int rio_write_file(rio_file* file, const void* contents, int count){
 	// appending contents to the end of file->contents
 	CopyMemory((char*)(file->contents) + file->file_size, contents, count);
 
+	file->file_size += count;
+
 	return 1;
 }
 
