@@ -56,10 +56,13 @@ rio_file* rio_open_file(const char* filename, RIO_FILE_OPEN_MODE mode){
 }
 
 int rio_write_file(rio_file* file, const void* contents, int count){
+	if(!(file->opening_mode & RIO_WRITE_MODE)) {
+		return 0;
+	}
 	SYSTEM_INFO sys;
 	GetSystemInfo(&sys);
 	int number_of_pages_now = (int)(file->file_size / sys.dwPageSize) + 1;
-	int number_of_pages_needed = (int)(file->file_size + count / sys.dwPageSize) + 1;
+	int number_of_pages_needed = (int)((file->file_size + count) / sys.dwPageSize) + 1;
 	if(number_of_pages_needed > number_of_pages_now){
 		// If we need more pages, we'll allocated more memory
 		BOOL result_free = VirtualFree(file->contents, 0, MEM_RELEASE);
@@ -78,7 +81,7 @@ int rio_write_file(rio_file* file, const void* contents, int count){
 }
 
 int rio_read_file(rio_file* file, void* dest, int count, int offset){
-	if((unsigned int)count > (file->file_size - offset)){
+	if((unsigned int)count > (file->file_size - offset) || !(file->opening_mode & RIO_READ_MODE)){
 		return 0;
 	}
 	CopyMemory(dest, (char*)(file->contents) + offset, count);
@@ -91,6 +94,7 @@ int rio_file_exists(const char* filename){
 
 void rio_close_file(rio_file* file){
 	CloseHandle(file->handle);
+	file->handle = NULL;
 	VirtualFree(file->contents, 0, MEM_RELEASE);
 	file->contents = NULL;
 	file->name[0] = 0;
@@ -99,6 +103,9 @@ void rio_close_file(rio_file* file){
 }
 
 int rio_save_changes(rio_file* file){
+	if(!(file->opening_mode & RIO_WRITE_MODE)){
+		return 0;
+	}
 	DWORD bytes_written = 0;
 	BOOL result_write = WriteFile(file->handle, file->contents, file->file_size, &bytes_written, NULL);
 	if(result_write && bytes_written == file->file_size){

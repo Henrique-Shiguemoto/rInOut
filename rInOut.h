@@ -19,7 +19,8 @@ typedef struct rio_file rio_file;
 rio_file* rio_open_file(const char* filename, RIO_FILE_OPEN_MODE mode);
 
 /**
- * Writes a string to the end of an opened file.
+ * Writes a string to the end of an opened file. If the file wasn't opened/created with 
+ * 	the RIO_WRITE_MODE, nothing is written in memory
  * 	- file: rio_file struct returned from rio_open_file()
  * 	- contents: the string to be written
  * 	- count: quantity of characters from the string *contents*
@@ -27,7 +28,8 @@ rio_file* rio_open_file(const char* filename, RIO_FILE_OPEN_MODE mode);
 int rio_write_file(rio_file* file, const void* contents, int count);
 
 /**
- * Reads contents from an opened file.
+ * Reads contents from an opened file. If the file wasn't opened/created with 
+ * 	the RIO_READ_MODE, nothing gets read from memory
  * 	- file: rio_file struct returned from rio_open_file()
  * 	- dest: destination pointer for the contents
  * 	- count: quantity of characters to be read from the file
@@ -42,14 +44,8 @@ int rio_read_file(rio_file* file, void* dest, int count, int offset);
 int rio_file_exists(const char* filename);
 
 /**
- * Returns the file size in bytes of the corresponding file from a file name.
- * 	- filename: name of the file to be found
- * */
-int rio_file_size(const char* filename);
-
-/**
  * This library doesn't actually interface with I/O directly with functions
- * 	like rio_read_file and rio_write_file, when we open the file (rio_open_file),
+ * 	such as rio_read_file and rio_write_file. When we open the file (rio_open_file),
  * 	the bytes from the file are copied to the file.contents pointer, which means 
  * 	we're just operating in memory. To actually persist changes the file, you'll 
  * 	need to call this function.
