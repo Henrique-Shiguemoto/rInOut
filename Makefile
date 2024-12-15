@@ -1,6 +1,6 @@
 SRC=main.c rInOut.c
 BIN=main.exe
-COMPILER=clang
+COMPILER=gcc
 COMPILER_WIN32=CL
 COMPILER_FLAGS=-Wall -Wextra -pedantic -g -std=c11 -Wno-unused-parameter -Wno-unused-variable
 
@@ -8,7 +8,7 @@ COMPILER_FLAGS=-Wall -Wextra -pedantic -g -std=c11 -Wno-unused-parameter -Wno-un
 COMPILER_FLAGS_WIN32=/Wall /std:c11 /Zi /wd4100 /wd5045 /wd4668 /options:strict
 DEBUGGER=gdb
 DEBUGGER_WIN32=raddbg
-TRASH=*.o *.exe *.ilk *.obj *.pdb *.rdi *.txt
+TRASH=*.o *.exe *.ilk *.obj *.pdb *.rdi *.txt *.out
 
 all:
 	$(COMPILER) $(SRC) $(COMPILER_FLAGS) -o $(BIN)
@@ -25,5 +25,6 @@ win:
 dwin: clean win
 	$(DEBUGGER_WIN32) $(BIN)
 
+# rm on Linux and del on Windows
 clean:
-	del $(TRASH)
+	rm $(TRASH)
