@@ -1,4 +1,4 @@
-SRC=main.c rInOut.c
+SRC=main.c rInOut.c rInOut.h
 BIN=main.exe
 COMPILER=gcc
 COMPILER_WIN32=CL

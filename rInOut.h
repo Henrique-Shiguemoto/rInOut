@@ -9,7 +9,13 @@ typedef enum RIO_FILE_OPEN_MODE {
 	RIO_WRITE_MODE 		= 0x00000002
 } RIO_FILE_OPEN_MODE;
 
-typedef struct rio_file rio_file;
+typedef struct rio_file {
+	char name[MAX_FILENAME_SIZE];
+	void* handle;
+	void* contents;
+	unsigned int file_size; // in bytes
+	int opening_mode;
+} rio_file;
 
 /**
  * Opens a file in case it already exists in the root directory, creates a file in case it doesn't exist

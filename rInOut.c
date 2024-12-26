@@ -8,14 +8,6 @@
 
 #define RIO_WINDOWS_DEFAULT_FILE_CONTENT_SIZE 4096
 
-typedef struct rio_file {
-	char name[MAX_FILENAME_SIZE];
-	HANDLE handle;
-	DWORD file_size; // in bytes
-	int opening_mode;
-	void* contents;
-} rio_file;
-
 rio_file* rio_open_file(const char* filename, RIO_FILE_OPEN_MODE mode){
 	DWORD opening_mode = 0;
 
@@ -132,14 +124,6 @@ int rio_save_and_close_file(rio_file* file){
 
 #define RIO_LINUX_DEFAULT_FILE_CONTENT_SIZE 4096
 
-typedef struct rio_file {
-	char name[MAX_FILENAME_SIZE];
-	FILE* handle;
-	unsigned int file_size; // in bytes
-	int opening_mode;
-	void* contents;
-} rio_file;
-
 rio_file* rio_open_file(const char* filename, RIO_FILE_OPEN_MODE mode){
 	char opening_mode[4] = {0};
 
@@ -154,27 +138,26 @@ rio_file* rio_open_file(const char* filename, RIO_FILE_OPEN_MODE mode){
 	memcpy(result_file->name, filename, min_size);
 	
 	// file size
-	fseek(result_file->handle, 0, SEEK_END);
-	size_t file_size = ftell(result_file->handle);
+	fseek((FILE*)result_file->handle, 0, SEEK_END);
+	size_t file_size = ftell((FILE*)result_file->handle);
 	result_file->file_size = file_size;
-	fseek(result_file->handle, 0, SEEK_SET);
+	fseek((FILE*)result_file->handle, 0, SEEK_SET);
 	
 	result_file->opening_mode = mode;
 	if(result_file->file_size == 0){
 		// means we just created the file, didn't open an existing one
-		result_file->contents = (rio_file*)calloc(1, RIO_LINUX_DEFAULT_FILE_CONTENT_SIZE);
+		result_file->contents = calloc(1, RIO_LINUX_DEFAULT_FILE_CONTENT_SIZE);
 		return result_file;
 	}else{
 		int pages_needed = (result_file->file_size / RIO_LINUX_DEFAULT_FILE_CONTENT_SIZE) + 1;
-		result_file->contents = (rio_file*)calloc(1, pages_needed * RIO_LINUX_DEFAULT_FILE_CONTENT_SIZE);
+		result_file->contents = calloc(1, pages_needed * RIO_LINUX_DEFAULT_FILE_CONTENT_SIZE);
 	}
 	
 	if(result_file->contents == NULL) { 
 		return NULL; 
 	}
 
-	unsigned int number_of_bytes_read = 0;
-	fread(result_file->contents, result_file->file_size, 1, result_file->handle);
+	unsigned int number_of_bytes_read = fread(result_file->contents, 1, result_file->file_size, (FILE*)result_file->handle);
 
 	if(number_of_bytes_read != result_file->file_size) { 
 		return NULL; 
@@ -224,7 +207,7 @@ int rio_save_changes(rio_file* file){
 		return 0;
 	}
 	unsigned int bytes_written = 0;
-	int result_write = fwrite(file->contents, file->file_size, 1, file->handle);
+	int result_write = fwrite(file->contents, file->file_size, 1, (FILE*)file->handle);
 	if(result_write && bytes_written == file->file_size){
 		return 1;
 	}
@@ -232,7 +215,7 @@ int rio_save_changes(rio_file* file){
 }
 
 void rio_close_file(rio_file* file){
-	fclose(file->handle);
+	fclose((FILE*)file->handle);
 	file->handle = NULL;
 	free(file->contents);
 	file->contents = NULL;
