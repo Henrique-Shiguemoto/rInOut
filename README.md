@@ -1,6 +1,6 @@
 # rInOut
 
-Simple library in C/C++ for file IO operations.
+Simple library in C for file IO operations.
 
 ## Features
 
@@ -12,12 +12,12 @@ Simple library in C/C++ for file IO operations.
 
 ## How to Use
 
-Copy the <code>rInOut.c</code> and <code>rInOut.h</code> (or the C++ equivalent) files to your project. Then you can just include the <code>rInOut.h</code> in a source file.
+Copy the <code>rInOut.c</code> and <code>rInOut.h</code> files to your project. Then you can just include the <code>rInOut.h</code> in a source file.
 
 ## Technologies Used
 
-- C/C++
+- C11
 - MSVC/Clang/GCC
 - Makefiles
 - win32
-- raddbg/gdb
+- raddbg/gdb/gf2
