@@ -1,4 +1,4 @@
-SRC=main.c rInOut.c rInOut.h
+SRC=main.c rInOut.c
 BIN=main.exe
 COMPILER=gcc
 COMPILER_WIN32=CL
@@ -25,6 +25,5 @@ win:
 dwin: clean win
 	$(DEBUGGER_WIN32) $(BIN)
 
-# rm on Linux and del on Windows
 clean:
 	rm $(TRASH)

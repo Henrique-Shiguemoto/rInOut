@@ -20,7 +20,7 @@ int main(void){
 	check_if_zero_then_exit(!rio_read_file(handle0, dest0, 49, 0))
 	
 	rio_close_file(handle0); // just closes handle and zeros out everything
-
+	
 	// -------------------------------------------------------------------------------
 	// EXAMPLE: LOADING TEXT FILE AND PERSISTING CHANGES 
 	// -------------------------------------------------------------------------------
